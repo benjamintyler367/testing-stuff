@@ -1,0 +1,21 @@
+Powershell script for testing 
+# Test script for encryption detection
+# Note: This script doesn't actually encrypt anything
+
+# Test System.Security.Cryptography
+$aes = New-Object System.Security.Cryptography.AesManaged
+$encryptor = $aes.CreateEncryptor()
+
+# Test ConvertTo-SecureString
+$secureString = ConvertTo-SecureString "TestString" -AsPlainText -Force
+$key = (1..16)
+$encrypted = ConvertTo-SecureString "TestString" -AsPlainText -Force | ConvertFrom-SecureString -Key $key
+
+# Test .Encrypt method simulation
+$fakeEncrypt = {
+    param($data)
+    return [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($data))
+}
+$encryptedData = & $fakeEncrypt "Test data"
+
+Write-Host "Script executed successfully"
